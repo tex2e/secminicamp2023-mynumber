@@ -22,3 +22,7 @@ openssl version
 python --version
 pip list 2>/dev/null | grep pyscard
 ```
+
+### NFCカードリーダ
+RFCリーダーは動作確認済みの PaSoRi RC-S300 を使用します（カードリーダは会場で貸し出します）。
+個数制限があるので、もし自宅でカードリーダお持ちであれば、持参していただけると大変助かります。
