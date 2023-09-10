@@ -17,6 +17,14 @@
 ### 確認
 
 以下のコマンドを実行して、それぞれでバージョンが表示されれば事前準備完了です！
+
+Windowsの場合：
+```
+openssl version
+py --version
+py -m pip list 2>/dev/null | grep pyscard
+```
+MacOSの場合：
 ```
 openssl version
 python --version
