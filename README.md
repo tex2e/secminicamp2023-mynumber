@@ -22,13 +22,13 @@ Windowsの場合：
 ```
 openssl version
 py --version
-py -m pip list 2>/dev/null | grep pyscard
+py -m pip list | sls pyscard
 ```
 MacOSの場合：
 ```
 openssl version
 python --version
-pip list 2>/dev/null | grep pyscard
+pip list | grep pyscard
 ```
 
 ### NFCカードリーダ
