@@ -1,6 +1,10 @@
 
 # セキュリティ・ミニキャンプ新潟 -- 資料
 
+### スライド
+
+- [マイナンバーカードの暗号技術とセキュリティ - Speaker Deck](https://speakerdeck.com/tex2e/secminicamp2023-mynumber)
+
 ### 事前準備
 
 1. opensslコマンドのインストール
