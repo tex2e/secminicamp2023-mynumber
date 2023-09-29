@@ -293,7 +293,7 @@ class JPKICardReader:
         if not mynumber_apdu.is_success(sw1, sw2):
             return False, mynumber_apdu.show_error(sw1, sw2)
 
-        data_len = data[0] + 3
+        data_len = data[0] + 6
         print('[*] 長さ :', hex(data_len))
 
         upper = (data_len >> 8) & 0xFF
@@ -303,6 +303,7 @@ class JPKICardReader:
         bytedata = io.BytesIO(bytearray(data))
 
         # ヘッダー
+        bytedata.read(2)
         tmp = bytedata.read(3)
         content_len = tmp[2]
 
