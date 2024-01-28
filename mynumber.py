@@ -289,56 +289,71 @@ class JPKICardReader:
             return False, mynumber_apdu.show_error(sw1, sw2)
 
         print('[*] 基本4情報の読み取り')
-        data, sw1, sw2 = self.sendAPDU([0x00, 0xB0, 0x00, 0x02, 0x01])
+        data, sw1, sw2 = self.sendAPDU([0x00, 0xB0, 0x00, 0x02, 0x03])
         if not mynumber_apdu.is_success(sw1, sw2):
             return False, mynumber_apdu.show_error(sw1, sw2)
 
-        # 2023年より前に発行したマイナンバーカードのとき
-        data_len = data[0] + 3
-        # 2023年より後に発行したマイナンバーカードのとき
-        # data_len = data[0] + 6
+        if data[0] == 0x82:
+            # データ長を表すフィールドが3バイトのとき
+            data_len = (data[1] << 8) + data[2] + 10
+        else:
+            # データ長を表すフィールドが1バイトのとき
+            data_len = data[0] + 10
+
         print('[*] 長さ :', hex(data_len))
 
-        upper = (data_len >> 8) & 0xFF
-        lower = (data_len     ) & 0xFF
         data, sw1, sw2 = self.sendAPDU([0x00, 0xB0, 0x00, 0x00, data_len])
 
         bytedata = io.BytesIO(bytearray(data))
 
         # ヘッダー
-        # bytedata.read(2)  # 2023年より後に発行したマイナンバーカードのとき
-        tmp = bytedata.read(3)
-        content_len = tmp[2]
+        tag = bytedata.read(2)
+        tmp = bytedata.read(1)
+        content_len = tmp[0]
+        if content_len == 0x82:
+            tmp = bytedata.read(2)
+            content_len = (tmp[0] << 8) + tmp[1]
 
         # 不明データを読み飛ばす
-        tmp = bytedata.read(3)
-        unknown_len = tmp[2]
+        tag = bytedata.read(2)
+        tmp = bytedata.read(1)
+        unknown_len = tmp[0]
         unknown = bytedata.read(unknown_len)
 
         # 氏名の取得
-        tmp = bytedata.read(3)
-        name_len = tmp[2]
+        tag = bytedata.read(2)
+        tmp = bytedata.read(1)
+        name_len = tmp[0]
+        if name_len == 0x82:
+            tmp = bytedata.read(2)
+            name_len = (tmp[0] << 8) + tmp[1]
         name = bytedata.read(name_len)
         name = name.decode('utf-8')
         print('[+] 氏名 :', name)
 
         # 住所の取得
-        tmp = bytedata.read(3)
-        address_len = tmp[2]
+        tag = bytedata.read(2)
+        tmp = bytedata.read(1)
+        address_len = tmp[0]
+        if address_len == 0x82:
+            tmp = bytedata.read(2)
+            address_len = (tmp[0] << 8) + tmp[1]
         address = bytedata.read(address_len)
         address = address.decode('utf-8')
         print('[+] 住所 :', address)
 
         # 生年月日の取得
-        tmp = bytedata.read(3)
-        birthday_len = tmp[2]
+        tag = bytedata.read(2)
+        tmp = bytedata.read(1)
+        birthday_len = tmp[0]
         birthday = bytedata.read(birthday_len)
         birthday = birthday.decode()
-        print('[+] 生年月日' + birthday)
+        print('[+] 生年月日 : ' + birthday)
 
         # 性別の取得
-        tmp = bytedata.read(3)
-        sex_len = tmp[2]
+        tag = bytedata.read(2)
+        tmp = bytedata.read(1)
+        sex_len = tmp[0]
         sex = bytedata.read(sex_len)
         sex_str = sex.decode()
         sex_desc = ""
@@ -346,11 +361,9 @@ class JPKICardReader:
             sex_desc = '男性'
         elif sex_str == '2':
             sex_desc = '女性'
-        elif sex_str == '9':
-            sex_desc = '適用不能'
         else:
             sex_desc = '不明'
-        print('[+] 性別', sex_desc)
+        print('[+] 性別 : ', sex_desc)
 
         return True, [name, address, birthday, sex_desc]
 
@@ -367,6 +380,6 @@ if __name__ == '__main__':
     # res, text = cardreader.get_cert(Cert.AUTH, outputfile="認証用証明書.der")
     # res, text = cardreader.get_cert(Cert.SIGN, outputfile="署名用証明書.der", password=password2)
     # res, text = cardreader.sign(Cert.AUTH, password=password1, target_filepath='重要書類.txt')
-    res, text = cardreader.sign(Cert.SIGN, password=password2, target_filepath='重要書類.txt')
+    # res, text = cardreader.sign(Cert.SIGN, password=password2, target_filepath='重要書類.txt')
     # res, text = cardreader.get_mynumber(password=password1)
-    # res, text = cardreader.get_personal_data(password=password1)
+    res, text = cardreader.get_personal_data(password=password1)
