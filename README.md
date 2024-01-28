@@ -35,6 +35,7 @@ python --version
 pip list | grep pyscard
 ```
 
-### NFCカードリーダ
-NFCリーダーは動作確認済みの PaSoRi RC-S300 を使用します（カードリーダは会場で貸し出します）。
-個数制限があるので、もし自宅でカードリーダお持ちであれば、持参していただけると大変助かります。
+### 注意事項
+
+- NFCリーダーは PaSoRi RC-S300 でのみ動作確認済みです。
+- Windows Subsystem for Linux (WSL) だと、デフォルトではUSBデバイスを認識できないため、Windows上に環境構築をお願いします。

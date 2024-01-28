@@ -380,6 +380,6 @@ if __name__ == '__main__':
     # res, text = cardreader.get_cert(Cert.AUTH, outputfile="認証用証明書.der")
     # res, text = cardreader.get_cert(Cert.SIGN, outputfile="署名用証明書.der", password=password2)
     # res, text = cardreader.sign(Cert.AUTH, password=password1, target_filepath='重要書類.txt')
-    # res, text = cardreader.sign(Cert.SIGN, password=password2, target_filepath='重要書類.txt')
+    res, text = cardreader.sign(Cert.SIGN, password=password2, target_filepath='重要書類.txt')
     # res, text = cardreader.get_mynumber(password=password1)
-    res, text = cardreader.get_personal_data(password=password1)
+    # res, text = cardreader.get_personal_data(password=password1)
